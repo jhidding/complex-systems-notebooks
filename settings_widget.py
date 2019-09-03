@@ -28,6 +28,9 @@ def settings_widget(cls):
             center=widgets.interactive_output(f, {"settings": settings}),
             right_sidebar=Label("Stats"),
             footer=Label("(C) Netherlands eScience Center"))
+            
+    The property `value` and methods `observe` and `vbox` are part of the interface.
+    This means these cannot be members of the generated settings class.
     """
     cls._defaults = {}
     for k in cls.__annotations__:
@@ -64,7 +67,16 @@ def settings_widget(cls):
     def m_vbox(self):
         return widgets.VBox(list(self.widgets.values()))
     
+    def arg_doc(k):
+        if k in cls._defaults:
+            return "{name}: {type} = {value}".format(
+                name=k, type=cls.__annotations__[k].__name__, value=cls._defaults[k])
+        else:
+            return k
+    
     cls.__init__ = m_init
+    cls.__init__.__doc__ = "Accepts keyword arguments:\n    - " \
+        + "\n    - ".join([arg_doc(n) for n in cls.__annotations__])
     cls.__getattr__ = m_getattr
     cls.observe = m_observe
     cls.value = property(m_value)

@@ -1,4 +1,6 @@
 numpy
 matplotlib
 ipywidgets>=7.5.1
+scipy
+sdeint
 
